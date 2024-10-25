@@ -36,6 +36,11 @@ class CreateUpdateTaskSerializer(serializers.ModelSerializer):
         slug_field='name',
         queryset=Project.objects.all(),
     )
+    assignee = serializers.SlugRelatedField(
+        slug_field='email',
+        queryset=User.objects.all(),
+        required=False
+    )
 
     class Meta:
         model = Task
@@ -45,7 +50,8 @@ class CreateUpdateTaskSerializer(serializers.ModelSerializer):
             'priority',
             'project',
             'tags',
-            'deadline'
+            'deadline',
+            'assignee',
         )
 
     def validate_name(self, value: str) -> str:
@@ -84,7 +90,7 @@ class CreateUpdateTaskSerializer(serializers.ModelSerializer):
         return value
 
     def validate_deadline(self, value: str) -> int:
-        value = timezone.make_aware(value, timezone.get_current_timezone())
+        value = timezone.make_aware(timezone.make_naive(value), timezone.get_current_timezone())
         if value < timezone.now():
             raise serializers.ValidationError(
                 "The deadline of the task couldn't be in the past"
