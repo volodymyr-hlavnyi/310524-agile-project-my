@@ -1,6 +1,14 @@
 import unittest
 
 
+def suite():
+    group_suite = unittest.TestSuite()
+    group_suite.addTest(TestCalculator('test_add'))
+    group_suite.addTest(TestCalculator('test_subtract'))
+
+    return group_suite
+
+
 class Calculator:
     def add(self, a, b):
         return a + b
@@ -24,4 +32,7 @@ class TestCalculator(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    # unittest.main()
+    group_suite = unittest.TestSuite()
+    group_suite.addTest(TestCalculator('test_add'))
+    group_suite.addTest(TestCalculator('test_subtract'))
