@@ -118,7 +118,7 @@ class CreateUpdateTaskSerializer(serializers.ModelSerializer):
 
 class TaskDetailSerializer(serializers.ModelSerializer):
     project = ProjectShortInfoSerializer()
-    tags = TagSerializer(many=True, read_only=True)
+    # tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Task
