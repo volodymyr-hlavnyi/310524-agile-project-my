@@ -55,9 +55,9 @@ class LoginUserView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=email, password=password)
 
         if user:
             refresh_token = RefreshToken.for_user(user)
@@ -86,3 +86,11 @@ class LoginUserView(APIView):
             return response
         else:
             return Response({'details': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class LogoutUserView(APIView):
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        response.delete_cookie(key='access_token')
+        response.delete_cookie(key='refresh_token')
+        return response
