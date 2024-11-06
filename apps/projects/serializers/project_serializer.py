@@ -17,7 +17,7 @@ class CreateProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'created_at']
+        fields = ['id', 'name', 'description', 'created_at']
         read_only_fields = ['created_at']
 
         def validate_description(self, value):

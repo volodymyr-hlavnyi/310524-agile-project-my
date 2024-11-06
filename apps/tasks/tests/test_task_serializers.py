@@ -35,7 +35,8 @@ class CreateTaskTestCase(TestCase):
             'priority': Priority.HIGH[0],
             'project': self.project.name,
             'tags': [1, 2],
-            'deadline': timezone.now() + timedelta(days=10)
+            'deadline': timezone.now() + timedelta(days=10),
+            'assignee': self.user.email,
         }
         serializer = CreateUpdateTaskSerializer(data=valid_data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
@@ -44,6 +45,7 @@ class CreateTaskTestCase(TestCase):
         self.assertIsInstance(serializer.validated_data['priority'], int)
         self.assertIsInstance(serializer.validated_data['project'], Project)
         self.assertIsInstance(serializer.validated_data['tags'], list)
+        self.assertEqual(serializer.validated_data['assignee'].pk, 1)
         for tag in serializer.validated_data['tags']:
             self.assertIsInstance(tag, Tag)
         self.assertIsInstance(serializer.validated_data['deadline'], timezone.datetime)

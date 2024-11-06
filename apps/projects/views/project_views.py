@@ -78,3 +78,22 @@ class ProjectDetailAPIView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class ProjectListAPIView(APIView):
+    def get_objects(self):
+        return Project.objects.all()
+
+    def get(self, request):
+        projects = self.get_objects()
+        if not projects.exists():
+            return Response([], status=status.HTTP_204_NO_CONTENT)
+        serializer = AllProjectSerializer(projects, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = CreateProjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

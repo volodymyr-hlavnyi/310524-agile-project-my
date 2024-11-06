@@ -3,7 +3,7 @@ from .views.project_views import *
 from .views.project_file_views import *
 
 urlpatterns = [
-    path('projects/', ProjectsApi.as_view()),
+    path('projects/', ProjectListAPIView.as_view(), name='project-list'),
     path('projects/<int:pk>/', ProjectDetailAPIView.as_view()),
     path('files/', ProjectFileListAPIView.as_view()),
 ]
