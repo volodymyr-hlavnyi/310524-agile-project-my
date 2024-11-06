@@ -21,5 +21,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('apps.routers')),
-    path('', lambda req: HttpResponse("Welcome")),
+    # path('', lambda req: HttpResponse("Welcome")),
 ]
