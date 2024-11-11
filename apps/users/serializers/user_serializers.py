@@ -6,11 +6,22 @@ from rest_framework.exceptions import ValidationError
 
 from apps.users.models import User
 
+import json
+from apps.users.choices.positions import UserPositions
+
+
+class UserPositionsEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, UserPositions):
+            return o.value
+        return super().default(o)
+
 
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'username',
             'first_name',
             'last_name',
             'position',
@@ -26,7 +37,15 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         write_only=True,
     )
 
+    position = serializers.ChoiceField(
+    choices=[(pos.value, pos.name) for pos in UserPositions])  # Expect string values
+
+    def create(self, validated_data):
+        validated_data['position'] = UserPositions(validated_data['position'])  # Convert to Enum if necessary
+        return super().create(validated_data)
+
     class Meta:
+
         model = User
         fields = (
             'username',
