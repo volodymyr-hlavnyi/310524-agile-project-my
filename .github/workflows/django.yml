@@ -12,19 +12,20 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres:latest
+      mysql:
+        image: mysql:latest
         env:
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+          MYSQL_USER: ${{ secrets.DB_USER }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
         ports:
-          - 5432:5432
+          - 3306:3306
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
     - uses: actions/checkout@v2
@@ -40,10 +41,15 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run migrations
+      env:
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
       run: |
         python manage.py migrate
 
     - name: Run tests
       run: |
-        python manage.py test
-#        pytest ./hw_test/test_app.py
+        pytest ./hw_test/test_app.py
