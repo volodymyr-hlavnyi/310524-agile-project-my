@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     deleted_at = models.DateTimeField(null=True, blank=True)
     deleted = models.BooleanField(default=False)
     position = models.CharField(
-        max_length=15,
+        max_length=50,
         choices=UserPositions.choices,
         default=UserPositions.PROGRAMMER
     )
